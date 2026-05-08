@@ -18,9 +18,6 @@ public interface StudentModel {
     String getFacultyName();
     @Value("#{target.departments.faculties.facultyCode}")
     String getFacultyCode();
-    @Value("#{target.semester.semesterName}")
-    String getSemesterName();
-    @Value("#{target.semester.academicSession}")
     String getAcademicSession();
 
 }

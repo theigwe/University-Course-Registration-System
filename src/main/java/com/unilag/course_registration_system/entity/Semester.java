@@ -19,6 +19,9 @@ public class Semester {
      * Example: "First Semester, 2025/2026 session"
      */
     public String getDisplayLabel() {
-        return String.format("%s, %s session", semesterName, academicSession);
+        String label = "FIRST".equalsIgnoreCase(semesterName) ? "First Semester"
+                     : "SECOND".equalsIgnoreCase(semesterName) ? "Second Semester"
+                     : semesterName;
+        return String.format("%s, %s session", label, academicSession);
     }
 }

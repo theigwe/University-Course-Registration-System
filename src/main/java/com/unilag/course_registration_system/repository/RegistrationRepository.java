@@ -10,6 +10,5 @@ import java.util.Optional;
 
 public interface RegistrationRepository extends JpaRepository<Registration,Long> {
     boolean existsByStudentsAndSemesterAndStatus(Student student, Semester semester, RegistrationStatus registrationStatus);
-    Optional<Registration> findByStudentsAndSemester(Student student, Semester semester);
-
+    Optional<Registration> findFirstByStudentsAndSemester_AcademicSessionOrderByIdDesc(Student student, String academicSession);
 }

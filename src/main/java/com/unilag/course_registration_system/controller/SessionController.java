@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("session")
+@RequestMapping("sessions")
 @RequiredArgsConstructor
 public class SessionController {
     private final SessionService sessionService;
 
-    @PostMapping("create")
+    @PostMapping
     public Response<TokenResponse> createSession(@RequestBody CreateSession request) {
         return sessionService.createSession(request);
     }

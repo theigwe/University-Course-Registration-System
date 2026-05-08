@@ -1,5 +1,6 @@
 package com.unilag.course_registration_system.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -18,6 +19,7 @@ public class Faculty extends BaseEntity {
     private String facultyName;
     private String facultyCode;
     // One Faculty has many Departments
+    @JsonIgnoreProperties("faculties")
     @OneToMany(mappedBy = "faculties", cascade = CascadeType.ALL)
     private List<Department> departments;
 

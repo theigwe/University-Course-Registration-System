@@ -57,6 +57,23 @@ public class JWTService {
         return claims;
     }
 
+    public String generateAdminToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", "ADMIN");
+        claims.put("username", username);
+
+        Instant now    = Instant.now();
+        Instant expiry = now.plusMillis(jwtExpirationMs);
+
+        return Jwts.builder()
+                .claims(claims)
+                .subject(username)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiry))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
     /**
      * Validate a token and return its claims.
      * Throws JwtException if invalid or expired.

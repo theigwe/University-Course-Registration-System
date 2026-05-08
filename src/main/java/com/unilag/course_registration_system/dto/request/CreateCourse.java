@@ -16,4 +16,5 @@ public class CreateCourse {
     private int availableSlots;
     private Long departmentId;
     private String level;
+    private String semester;
 }

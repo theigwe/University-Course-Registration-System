@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @Setter
 public class RegistrationRequest {
-    private List<String> courseCodes;
+    private List<String> courseIds;
     private Semester semester;
 }

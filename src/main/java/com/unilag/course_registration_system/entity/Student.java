@@ -1,9 +1,6 @@
 package com.unilag.course_registration_system.entity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -28,20 +25,15 @@ public class Student extends BaseEntity {
     private String address;
     private String currentLevel;
 
+    @Column(name = "enrolled_academic_session")
+    private String academicSession;
+
     // Many Students belong to one Department
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department departments;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "semesterName", column = @Column(name = "enrolled_semester_name")),
-            @AttributeOverride(name = "academicSession", column = @Column(name = "enrolled_academic_session"))
-    })
-    private Semester semester;
-
-
-    public Student(String studentId, String firstName, String lastName, String email, String phoneNumber, String address, String currentLevel, Department departments, Semester semester) {
+    public Student(String studentId, String firstName, String lastName, String email, String phoneNumber, String address, String currentLevel, Department departments, String academicSession) {
         this.studentId = studentId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,6 +42,6 @@ public class Student extends BaseEntity {
         this.address = address;
         this.currentLevel = currentLevel;
         this.departments = departments;
-        this.semester = semester;
+        this.academicSession = academicSession;
     }
 }

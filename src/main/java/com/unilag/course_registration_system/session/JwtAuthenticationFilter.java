@@ -76,27 +76,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
      * Builds a fully-authenticated token from JWT claims and stores it in
-     * the SecurityContext.  The principal is a {@link com.unilag.course_registration_system.entity.Student} built
-     * from the embedded claims; the role is ROLE_STUDENT.
+     * the SecurityContext. Admin tokens carry role=ADMIN; all others are ROLE_STUDENT.
      */
     private void setAuthentication(Claims claims, HttpServletRequest request) {
-        Student principal = Student.builder()
-                .studentId(claims.get("studentId", String.class))
-                .email(claims.get("email",     String.class))
-                .firstName(claims.get("firstName", String.class))
-                .build();
+        String role = claims.get("role", String.class);
+
+        Object principal;
+        SimpleGrantedAuthority authority;
+
+        if ("ADMIN".equals(role)) {
+            principal = claims.getSubject();
+            authority = new SimpleGrantedAuthority("ROLE_ADMIN");
+            log.debug("Authenticated admin: {}", principal);
+        } else {
+            principal = Student.builder()
+                    .studentId(claims.get("studentId", String.class))
+                    .email(claims.get("email",     String.class))
+                    .firstName(claims.get("firstName", String.class))
+                    .build();
+            authority = new SimpleGrantedAuthority("ROLE_STUDENT");
+            log.debug("Authenticated student: {}", claims.get("studentId", String.class));
+        }
 
         UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(
-                        principal,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_STUDENT"))
-                );
-
+                new UsernamePasswordAuthenticationToken(principal, null, List.of(authority));
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        log.debug("Authenticated student: {}", principal.getStudentId());
     }
 
     /** Writes a JSON 401 response and halts the filter chain. */

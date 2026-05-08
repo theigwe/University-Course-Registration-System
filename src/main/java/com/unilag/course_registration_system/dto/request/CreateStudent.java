@@ -1,6 +1,5 @@
 package com.unilag.course_registration_system.dto.request;
 
-import com.unilag.course_registration_system.entity.Semester;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,5 +14,5 @@ public class CreateStudent {
     private String address;
     private String currentLevel;
     private Long departmentId;
-    private Semester semester;
+    private String academicSession;
 }

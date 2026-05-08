@@ -3,11 +3,13 @@ package com.unilag.course_registration_system.service.impl;
 import com.unilag.course_registration_system.dto.request.CreateCourse;
 import com.unilag.course_registration_system.dto.response.Response;
 import com.unilag.course_registration_system.dto.response.TokenValidationResponse;
+import com.unilag.course_registration_system.entity.ActiveSemester;
 import com.unilag.course_registration_system.entity.Course;
 import com.unilag.course_registration_system.entity.Department;
 import com.unilag.course_registration_system.entity.Student;
 import com.unilag.course_registration_system.exception.NotFoundException;
 import com.unilag.course_registration_system.model.CourseModel;
+import com.unilag.course_registration_system.repository.ActiveSemesterRepository;
 import com.unilag.course_registration_system.repository.CourseRepository;
 import com.unilag.course_registration_system.repository.DepartmentRepository;
 import com.unilag.course_registration_system.repository.StudentRepository;
@@ -28,6 +30,7 @@ import static com.unilag.course_registration_system.utils.ResponseCodes.VALIDATI
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final DepartmentRepository departmentRepository;
+    private final ActiveSemesterRepository activeSemesterRepository;
     private final TokenService tokenService;
     private final StudentRepository studentRepository;
     private final HttpServletRequest servletRequest;
@@ -43,8 +46,11 @@ public class CourseServiceImpl implements CourseService {
         if (request.getCourseTitle() == null || request.getCourseTitle().isEmpty()) {
             return new Response<>(VALIDATION_FAILED_CODE, "Course title is required");
         }
+        if (request.getSemester() == null || (!request.getSemester().equals("FIRST") && !request.getSemester().equals("SECOND"))) {
+            return new Response<>(VALIDATION_FAILED_CODE, "Semester must be FIRST or SECOND");
+        }
         Department dept = departmentRepository.findById(request.getDepartmentId()).orElseThrow(() -> new NotFoundException("Department does not exist"));
-        Course course = new Course(request.getCourseCode(), request.getCourseTitle(), request.getCreditUnit(), request.getPrerequisite(), request.getAvailableSlots(), request.getLevel(), dept);
+        Course course = new Course(request.getCourseCode(), request.getCourseTitle(), request.getCreditUnit(), request.getPrerequisite(), request.getAvailableSlots(), request.getLevel(), request.getSemester(), dept);
         courseRepository.save(course);
         System.out.println("Course created successfully");
         return new Response<>(GENERAL_SUCCESS_CODE, "Course created successfully");
@@ -53,14 +59,20 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Response<List<CourseModel>> fetchCourses() {
         String token = tokenService.getToken(servletRequest);
-        TokenValidationResponse session =  tokenService.validateToken(token);
+        TokenValidationResponse session = tokenService.validateToken(token);
         log.info("Logged in user {}", session);
-        Student student= studentRepository.findByStudentId(session.getStudentId()).orElseThrow(() -> new NotFoundException("Student record not found"));
-        Department dept = departmentRepository.findById(session.getDepartmentId()).orElseThrow(() -> new NotFoundException("Department does not exist"));
-        log.info("Department {}", dept);
-        log.info("Level {}", student.getCurrentLevel());
-        List<CourseModel> courses = courseRepository.findByDepartmentAndLevel(dept, student.getCurrentLevel());
-        System.out.println("Courses retrieved successfully");
+
+        ActiveSemester activeSemester = activeSemesterRepository.findByActiveTrue()
+                .orElseThrow(() -> new NotFoundException("Registration is currently closed. No active semester set."));
+
+        Student student = studentRepository.findByStudentId(session.getStudentId())
+                .orElseThrow(() -> new NotFoundException("Student record not found"));
+        Department dept = departmentRepository.findById(session.getDepartmentId())
+                .orElseThrow(() -> new NotFoundException("Department does not exist"));
+
+        log.info("Active semester: {} {}", activeSemester.getSemesterName(), activeSemester.getAcademicSession());
+        List<CourseModel> courses = courseRepository.findByDepartmentAndLevelAndSemester(
+                dept, student.getCurrentLevel(), activeSemester.getSemesterName());
         return new Response<>(GENERAL_SUCCESS_CODE, "Courses retrieved successfully", courses);
     }
 }

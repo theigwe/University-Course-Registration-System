@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course,Long> {
-    List<Course> findByLevelAndDepartment(String level, Department department);
-    List<CourseModel> findByDepartmentAndLevel(Department department, String courseCode);
+    List<Course> findByLevelAndDepartmentAndSemester(String level, Department department, String semester);
+    List<CourseModel> findByDepartmentAndLevelAndSemester(Department department, String level, String semester);
+    List<CourseModel> findByCourseCodeIn(List<String> courseCodes);
 }

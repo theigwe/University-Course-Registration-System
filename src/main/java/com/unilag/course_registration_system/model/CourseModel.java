@@ -9,4 +9,5 @@ public interface CourseModel {
     List<String> getPrerequisite();
     int getAvailableSlots();
     String getLevel();
+    String getSemester();
 }

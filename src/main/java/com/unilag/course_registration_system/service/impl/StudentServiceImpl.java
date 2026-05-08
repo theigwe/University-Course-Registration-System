@@ -45,18 +45,12 @@ public class StudentServiceImpl implements StudentService {
         if (request.getCurrentLevel() == null || request.getCurrentLevel().isEmpty()) {
             return new Response<>(VALIDATION_FAILED_CODE, "Current Level is required.");
         }
-        if (request.getSemester() == null){
-            return new Response<>(VALIDATION_FAILED_CODE, "Semester is required.");
-        }
-        if (request.getSemester().getSemesterName() == null || request.getSemester().getSemesterName().isEmpty()) {
-            return new Response<>(VALIDATION_FAILED_CODE, "Semester Name is required.");
-        }
-        if (request.getSemester().getAcademicSession() == null || request.getSemester().getAcademicSession().isEmpty()) {
+        if (request.getAcademicSession() == null || request.getAcademicSession().isEmpty()) {
             return new Response<>(VALIDATION_FAILED_CODE, "Academic Session is required.");
         }
 
         Department dept = departmentRepository.findById(request.getDepartmentId()).orElseThrow(()-> new NotFoundException("Department not found"));
-        Student student = new Student(generateUniqueId(),request.getFirstName(), request.getLastName(),request.getEmail(), request.getPhoneNumber(), request.getAddress(), request.getCurrentLevel(), dept, request.getSemester());
+        Student student = new Student(generateUniqueId(), request.getFirstName(), request.getLastName(), request.getEmail(), request.getPhoneNumber(), request.getAddress(), request.getCurrentLevel(), dept, request.getAcademicSession());
         studentRepository.save(student);
         System.out.println("Student successfully registered.");
         return new Response<>(GENERAL_SUCCESS_CODE, "Student registered successfully");

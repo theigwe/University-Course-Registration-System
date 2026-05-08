@@ -28,6 +28,7 @@ public class Course extends BaseEntity {
     private List<String> prerequisite;
     private int availableSlots;
     private String level;
+    private String semester;
 
     /**
      * Relationship: Many Courses belong to one Department.
@@ -36,24 +37,19 @@ public class Course extends BaseEntity {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    public Course(String courseCode, String courseTitle, int creditUnit, List<String> prerequisite, int availableSlots, String level, Department department) {
+    public Course(String courseCode, String courseTitle, int creditUnit, List<String> prerequisite, int availableSlots, String level, String semester, Department department) {
         this.courseCode = courseCode;
         this.courseTitle = courseTitle;
         this.creditUnit = creditUnit;
         this.prerequisite = prerequisite;
         this.availableSlots = availableSlots;
         this.level = level;
+        this.semester = semester;
         this.department = department;
     }
 
     @Override
     public String toString() {
-        return "Course{" +
-                "courseCode='" + courseCode + '\'' +
-                ", courseTitle='" + courseTitle + '\'' +
-                ", creditUnit=" + creditUnit +
-                ", prerequisite=" + prerequisite +
-                ", availableSlots=" + availableSlots +
-                '}';
+        return "Course{courseCode='" + courseCode + "', courseTitle='" + courseTitle + "', semester='" + semester + "'}";
     }
 }
