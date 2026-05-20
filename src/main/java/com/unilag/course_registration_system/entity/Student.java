@@ -7,15 +7,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "students")
 @Entity
-@Builder
 public class Student extends BaseEntity {
     private String studentId;
     private String firstName;
@@ -33,6 +32,7 @@ public class Student extends BaseEntity {
     @JoinColumn(name = "department_id")
     private Department departments;
 
+    @Builder
     public Student(String studentId, String firstName, String lastName, String email, String phoneNumber, String address, String currentLevel, Department departments, String academicSession) {
         this.studentId = studentId;
         this.firstName = firstName;

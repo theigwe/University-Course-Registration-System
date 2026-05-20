@@ -12,7 +12,7 @@ Spring Boot REST API for the Unilag course registration portal. Handles student 
 | Framework | Spring Boot 4.0.5 |
 | Security | Spring Security + JJWT 0.12.3 |
 | Persistence | Spring Data JPA + Hibernate |
-| Database | MySQL 8+ |
+| Database | PostgreSQL 16+ |
 | Build | Maven |
 
 ---
@@ -21,7 +21,7 @@ Spring Boot REST API for the Unilag course registration portal. Handles student 
 
 - Java 21
 - Maven 3.9+
-- MySQL 8 running locally (or via Docker)
+- PostgreSQL 16 running locally (or via Docker)
 
 ---
 
@@ -32,7 +32,7 @@ Spring Boot REST API for the Unilag course registration portal. Handles student 
 cd backend
 
 # 2. Create the database
-mysql -u root -p -e "CREATE DATABASE registration;"
+psql -U postgres -c "CREATE DATABASE registration;"
 
 # 3. Run with defaults (see Environment Variables below)
 mvn spring-boot:run
@@ -49,10 +49,10 @@ All variables have working defaults for local development. Override via environm
 
 | Variable | Default | Description |
 |---|---|---|
-| `DB_HOST` | `localhost` | MySQL host |
-| `DB_PORT` | `3306` | MySQL port |
+| `DB_HOST` | `localhost` | PostgreSQL host |
+| `DB_PORT` | `5432` | PostgreSQL port |
 | `DB_NAME` | `registration` | Database name |
-| `DB_USERNAME` | `root` | DB user |
+| `DB_USERNAME` | `postgres` | DB user |
 | `DB_PASSWORD` | `password` | DB password |
 | `JWT_SECRET` | `5367566B…` | HMAC-SHA256 signing key — **change in production** |
 | `ALLOWED_ORIGINS` | `http://localhost:3000,http://localhost:4200,http://localhost:5173` | Comma-separated CORS origins |
@@ -271,6 +271,7 @@ mvn clean package -DskipTests
 
 java -jar target/course-registration-system-*.jar \
   --DB_HOST=prod-host \
+  --DB_PORT=5432 \
   --DB_PASSWORD=<secret> \
   --JWT_SECRET=<64-char-hex> \
   --ADMIN_PASSWORD=<strong-password> \
