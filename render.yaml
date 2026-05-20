@@ -1,0 +1,41 @@
+databases:
+  - name: course-registration-db
+    databaseName: registration
+    user: course_reg_user
+    plan: free
+
+services:
+  - type: web
+    name: course-registration-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/actuator/health
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: course-registration-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: course-registration-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: course-registration-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: course-registration-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: course-registration-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: http://localhost:3000
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
